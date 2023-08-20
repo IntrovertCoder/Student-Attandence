@@ -1,0 +1,117 @@
+# Student and Teacher role identifiers
+STUDENT_ROLE = 'student'
+TEACHER_ROLE = 'teacher'
+
+# Student and teacher data storage
+students_db = {}
+attendance_db = {}
+
+while True:
+    print("Student Information Management System")
+    print("1. View Your Attendance")
+    print("2. Teacher Menu")
+    print("3. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        role = STUDENT_ROLE
+        student_id = input("Enter your Student ID: ")
+        if student_id in students_db:
+            print("Your Attendance Records:")
+            print("Date       | Attendance")
+            print("-" * 25)
+            for date, attendance_info in attendance_db.items():
+                attendance = attendance_info.get(student_id, "N/A")
+                print(f"{date} | {attendance}")
+        else:
+            print("Student not found.")
+    elif choice == '2':
+        role = TEACHER_ROLE
+        teacher_code = input("Enter the teacher code: ")
+        if teacher_code == "123456":
+            print("Teacher Menu:")
+            print("1. Add Student Record")
+            print("2. View Student Records")
+            print("3. Update Student Record")
+            print("4. Delete Student Record")
+            print("5. Mark Attendance")
+            print("6. View Attendance Records")
+            print("7. Exit")
+
+            teacher_choice = input("Enter your choice: ")
+
+            if teacher_choice == '1':
+                student_id = input("Enter Student ID: ")
+                if student_id in students_db:
+                    print("Student ID already exists. Please enter a unique ID.")
+                else:
+                    name = input("Enter Student Name: ")
+                    age = input("Enter Student Age: ")
+                    grade = input("Enter Student Grade: ")
+                    students_db[student_id] = {'name': name, 'age': age, 'grade': grade}
+                    print("Student added successfully!")
+
+            elif teacher_choice == '2':
+                if not students_db:
+                    print("No student records found.")
+                else:
+                    print("Student ID | Name      | Age | Grade")
+                    print("-" * 40)
+                    for student_id, student_info in students_db.items():
+                        print(f"{student_id:^10} | {student_info['name']:^10} | {student_info['age']:^3} | {student_info['grade']:^5}")
+
+            elif teacher_choice == '3':
+                student_id = input("Enter Student ID to update: ")
+                if student_id in students_db:
+                    print(f"Updating information for {students_db[student_id]['name']}")
+                    students_db[student_id]['name'] = input("Enter new Name: ")
+                    students_db[student_id]['age'] = input("Enter new Age: ")
+                    students_db[student_id]['grade'] = input("Enter new Grade: ")
+                    print("Student information updated!")
+                else:
+                    print("Student not found.")
+
+            elif teacher_choice == '4':
+                student_id = input("Enter Student ID to delete: ")
+                if student_id in students_db:
+                    del students_db[student_id]
+                    print("Student deleted!")
+                else:
+                    print("Student not found.")
+
+            elif teacher_choice == '5':
+                date = input("Enter Date (YYYY-MM-DD): ")
+                if date in attendance_db:
+                    print(f"Attendance is already marked for {date}.")
+                else:
+                    print("Marking attendance for students...")
+                    attendance_db[date] = {}
+                    for student_id in students_db:
+                        attendance = input(f"Is {students_db[student_id]['name']} present? (Y/N): ").upper()
+                        attendance_db[date][student_id] = attendance
+                    print("Attendance marked successfully!")
+
+            elif teacher_choice == '6':
+                student_id = input("Enter Student ID to view attendance: ")
+                if student_id in students_db:
+                    print("Name    | Age  |   Date       | Attendance")
+                    print("-" * 40)
+                    for date, attendance_info in attendance_db.items():
+                        attendance = attendance_info.get(student_id, "N/A")
+                        print(f"{name} | {age} | {date} | {attendance}")
+                else:
+                    print("Student not found.")
+
+            elif teacher_choice == '7':
+                print("Exiting the teacher menu.")
+            else:
+                print("Invalid choice. Please select a valid option.")
+        else:
+            print("Teacher code is incorrect. Access denied.")
+    elif choice == '3':
+        print("Exiting the program.")
+        break
+    else:
+        print("Invalid choice. Please select a valid option.")
+
